@@ -2,7 +2,6 @@ class human:
     def __init__(self, n, o):
         self.name = n
         self.occupation = o
-
     def do_work(self):
         if self.occupation == 'tennis player':
             print(self.name, 'plays tennis')
@@ -15,6 +14,6 @@ class human:
 
 tom = human('Tom Cruise', 'actor')
 maria = human('Maria Sharapova', 'tennis player')
-
+srikanth = human('srikanth kahndavalli','coder')
 tom.do_work()
 tom.speak()
