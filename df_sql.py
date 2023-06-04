@@ -50,12 +50,14 @@ trusted_connection=yes;
 """
 conn = odbc.connect(connection_string)
 #print(pyodbc.drivers())
-conn1 = sqlalchemy.create_engine(f'mssql+pyodbc://{socket.gethostname()}/batter?trusted_connection=yes&driver=ODBC Driver 17 for SQL Server')
+conn1 = sqlalchemy.create_engine(f'mssql+pyodbc://{socket.gethostname()}/works?trusted_connection=yes&driver=ODBC Driver 17 for SQL Server')
 print(conn1)
-table = 'batter'
-df=pd.DataFrame(batter_data)
-print(df)
-#df.to_sql(table,con=conn1,if_exists='append',index=False)
+
+batter_df=pd.DataFrame(batter_data)
+topping_df = pd.DataFrame(topping_data)
+
+batter_df.to_sql('batter',conn1,if_exists='replace',index=False)
+topping_df.to_sql('topping',conn1,if_exists='replace',index=False)
 
 # insert_query = """
 # use works;
