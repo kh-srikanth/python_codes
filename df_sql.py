@@ -1,7 +1,11 @@
-import requests
+import socket
+
+import pypyodbc as odbc
+import pyodbc
 import json
-import numpy as np
 import pandas as pd
+import sqlalchemy
+
 cook = """{
 	"id": "0001",
 	"type": "donut",
@@ -31,10 +35,35 @@ cook = """{
 cooking = json.loads(cook)
 batters = cooking["batters"]
 batter = batters["batter"]
-print(batter)
+#print(batter)
 batter_data = pd.json_normalize(batter)
-print(batter_data)
+#print(batter_data)
 topping = cooking["topping"]
-print(topping)
+#print(topping)
 topping_data = pd.json_normalize(topping)
-print(topping_data)
+#print(topping_data)
+connection_string = f"""
+DRIVER={{{'SQL SERVER'}}};
+SERVER={'DESKTOP-F726TKR'};
+DATA_BASE={'works'};
+trusted_connection=yes;
+"""
+conn = odbc.connect(connection_string)
+#print(pyodbc.drivers())
+conn1 = sqlalchemy.create_engine(f'mssql+pyodbc://{socket.gethostname()}/batter?trusted_connection=yes&driver=ODBC Driver 17 for SQL Server')
+print(conn1)
+table = 'batter'
+df=pd.DataFrame(batter_data)
+print(df)
+#df.to_sql(table,con=conn1,if_exists='append',index=False)
+
+# insert_query = """
+# use works;
+# insert into dbo.batter (id,type)
+# select ?,?
+# """
+# cursor = conn.cursor()
+# cursor.executemany(insert_query,df)
+# conn.commit()
+# cursor.close()
+# conn.close()
