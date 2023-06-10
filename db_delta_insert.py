@@ -1,7 +1,6 @@
 import socket
 
-import pypyodbc as odbc
-import pyodbc
+import pyodbc as odbc
 import json
 import pandas as pd
 import sqlalchemy
@@ -42,30 +41,19 @@ topping = cooking["topping"]
 #print(topping)
 topping_data = pd.json_normalize(topping)
 #print(topping_data)
-connection_string = f"""
-DRIVER={{{'SQL SERVER'}}};
-SERVER={'DESKTOP-F726TKR'};
-DATA_BASE={'works'};
-trusted_connection=yes;
-"""
-conn = odbc.connect(connection_string)
-#print(pyodbc.drivers())
-conn1 = sqlalchemy.create_engine(f'mssql+pyodbc://{socket.gethostname()}/works?trusted_connection=yes&driver=ODBC Driver 17 for SQL Server')
-print(conn1)
-
-batter_df=pd.DataFrame(batter_data)
-topping_df = pd.DataFrame(topping_data)
-
-batter_df.to_sql('batter',conn1,if_exists='replace',index=False)
-topping_df.to_sql('topping',conn1,if_exists='replace',index=False)
-
+connection_string = odbc.connect(
+    "Driver={SQL Server};"
+    "Server=DESKTOP-F726TKR;"
+    "Database=works;"
+    )
+conn = connection_string
 insert_query = """
 use works;
 insert into dbo.batter (id,type)
 select ?,?
 """
-# cursor = conn.cursor()
-# cursor.executemany(insert_query,df)
-# conn.commit()
-# cursor.close()
-# conn.close()
+tables = pd.read_sql("SELECT * FROM batter", conn)
+print(tables)
+conn.close()
+conn.cursor()
+
